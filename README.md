@@ -19,7 +19,7 @@ documentos, proyectos y tareas en SharePoint, de forma segura y auditada.**
 ![python](https://img.shields.io/badge/Python-3.12-blue)
 ![fastapi](https://img.shields.io/badge/FastAPI-0.115-009688)
 ![m365](https://img.shields.io/badge/Microsoft%20365-Graph%20v1.0-0078D4)
-![tests](https://img.shields.io/badge/tests-267%20✓-brightgreen)
+![tests](https://img.shields.io/badge/tests-169%20✓%20simulados-brightgreen)
 ![privado](https://img.shields.io/badge/repo-privado-lightgrey)
 
 </div>
@@ -36,6 +36,7 @@ documentos, proyectos y tareas en SharePoint, de forma segura y auditada.**
 | 🧰 | [Stack tecnológico](docs/03-stack.md) | Desarrolladores |
 | 🗺️ | [Roadmap y visión](docs/04-roadmap.md) | Todos |
 | 📚 | [Glosario](docs/05-glosario.md) | Quien no sea técnico |
+| 📋 | [Ficha técnica](docs/06-ficha-tecnica.md) | TI, compras, evaluadores |
 
 > ℹ️ Este repositorio **solo contiene documentación**. El código fuente vive en un repositorio
 > privado aparte.
@@ -148,8 +149,8 @@ flowchart LR
 | 👀 | Vista previa + confirmación | Nada se ejecuta sin que veas antes qué va a pasar |
 | 🧑‍⚖️ | Aprobación por otra persona | Para documentos confidenciales o acciones de riesgo |
 | 🔑 | Permisos mínimos | Solo en los sitios que el cliente autoriza (`Sites.Selected`) |
-| 📒 | Auditoría encadenada | Cualquier manipulación del registro se detecta |
-| 🧪 | Auditorías adversariales | Cada fase la revisa un auditor que intenta romperla |
+| 📒 | Auditoría encadenada | Editar o insertar eventos se detecta ([límites conocidos](docs/06-ficha-tecnica.md)) |
+| 🧪 | Revisión adversarial | Cada fase la revisa un modelo de IA que intenta romperla (no es un pentest externo) |
 
 Más detalle en [🛡️ Seguridad](docs/02-seguridad.md).
 
@@ -202,8 +203,9 @@ flowchart TB
 | 7 | 🚀 Infraestructura en Azure | `░░░░░░░░░░` | ⏳ |
 | 8 | 🧪 Auditoría final y piloto | `░░░░░░░░░░` | ⏳ |
 
-📊 **267 pruebas automáticas pasando** · 🔍 **3 auditorías de seguridad independientes**, cuyos
-hallazgos están todos corregidos.
+📊 **169 pruebas distintas pasando** (267 ejecuciones: 98 se repiten sobre el adaptador HTTP) ·
+🔍 **3 revisiones de seguridad hechas por un modelo de IA**, con sus hallazgos corregidos. No
+son un pentest externo. Ver la [ficha técnica](docs/06-ficha-tecnica.md).
 
 ---
 

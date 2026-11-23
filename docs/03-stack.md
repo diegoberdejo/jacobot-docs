@@ -44,7 +44,7 @@ flowchart TB
 | ⚡ | **FastAPI** | 0.115 | API HTTP tipada y rápida |
 | 🧾 | **Pydantic** | 2.14 | Contratos estrictos: rechaza datos que no esperamos |
 | 🗄️ | **SQLAlchemy** | 2.0 | Acceso a base de datos |
-| 🐘 | **PostgreSQL** | 17 | Base de datos de producción |
+| 🐘 | **PostgreSQL** | 17 | Base de datos de producción (🟡 aún sin probar; las pruebas usan SQLite) |
 | 🔁 | **Alembic** | 1.20 | Migraciones de la base de datos |
 | 🔐 | **PyJWT** | 2.15 | Validación de tokens de Entra ID |
 | 🎫 | **MSAL** | 1.39 | Intercambio de tokens On-Behalf-Of con Microsoft |
@@ -52,8 +52,8 @@ flowchart TB
 | 🧪 | **pytest** | 9.2 | Pruebas automáticas |
 | 🧹 | **ruff** | 0.17 | Estilo y errores comunes |
 | 🔍 | **mypy** (estricto) | 2.4 | Verificación de tipos |
-| 🐳 | **Docker** | — | Contenedores reproducibles |
-| 🤖 | **GitHub Actions** | — | CI: lint, tipos, pruebas, migraciones, auditoría de dependencias |
+| 🐳 | **Docker** | — | Contenedores reproducibles (🟡 imagen sin construir) |
+| 🤖 | **GitHub Actions** | — | CI: lint, tipos, pruebas, migraciones, auditoría de dependencias (🟡 nunca ejecutada) |
 
 Próximas fases: ⚛️ **Next.js + TypeScript + Tailwind** (portal) · 🔷 **Azure Container Apps,
 Key Vault, Monitor, Bicep** (infraestructura).
@@ -102,7 +102,7 @@ flowchart LR
 | 🟢 **Unitarias del adaptador** | Reintentos, paginación, errores, tokens | ✅ Pasando |
 | 🔴 **Live** | Comportamiento real de Microsoft 365 | ⏳ Esperando el tenant |
 
-📊 **267 pruebas pasando** · 5 pruebas live a la espera del tenant.
+📊 **169 pruebas distintas pasando** (267 ejecuciones) · 5 pruebas live a la espera del tenant.
 
 ### ✅ Control de calidad en cada cambio
 
@@ -116,7 +116,7 @@ flowchart LR
 
 El proyecto se desarrolla con **Claude Code** (Anthropic), usando:
 - 🧠 **Claude Opus**: implementación principal
-- 🔎 **Claude Fable**: auditorías de seguridad independientes
+- 🔎 **Claude Fable**: revisiones de seguridad en contexto aislado
 - 🧩 **Skills propias**: `jacobot-security` y `jacobot-microsoft-graph`, con las reglas del proyecto
 - 🕵️ **Subagente auditor**: `jacobot-security-auditor`, que intenta romper cada fase
 

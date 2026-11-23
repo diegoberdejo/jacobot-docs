@@ -180,8 +180,8 @@ Las reglas:
 
 🔒 Jacobot **solo** puede tocar la 📥 Bandeja de entrada y las carpetas
 `Proyectos/{proyecto}/{categoría}`. Lo comprueba subiendo por los **identificadores** de las
-carpetas, no comparando rutas de texto, porque las rutas se pueden falsificar y los
-identificadores no. Fuera de esa zona, todo responde lo mismo: "no encontrado".
+carpetas, no comparando rutas de texto: una ruta cambia si alguien renombra una carpeta, y el
+identificador no. Fuera de esa zona, todo responde lo mismo: "no encontrado".
 
 ### 🏷️ Categoría sugerida
 
@@ -204,7 +204,7 @@ predicción.
 |---|---|---|
 | Dónde | Lista de SharePoint | Base de datos del Gateway |
 | Para quién | Personas (consulta diaria) | Auditores, soporte, seguridad |
-| ¿Editable? | Sí, por usuarios con permiso | No: cadena de firmas, cualquier cambio se detecta |
+| ¿Editable? | Sí, por usuarios con permiso | No: cadena de firmas; editar o insertar se detecta (recortar el final, todavía no) |
 | ¿Se usa para decidir? | ❌ Nunca | ✅ Es la fuente de verdad |
 
 [⬅️ Volver al inicio](../README.md) · [Siguiente: 🛡️ Seguridad ➡️](02-seguridad.md)

@@ -106,24 +106,27 @@ flowchart LR
 | Momento | Qué pasa |
 |---|---|
 | 🚪 El admin revoca sesiones o desactiva la cuenta | — |
-| ⚡ Minutos después | SharePoint rechaza los tokens (CAE) → Jacobot responde **"vuelve a iniciar sesión"** |
-| ⏰ Como máximo cada 5 minutos | Jacobot vuelve a pedir un token a Microsoft, que debe negarlo |
+| ⚡ Minutos después (esperado) | SharePoint debería rechazar los tokens (CAE) → Jacobot responde **"vuelve a iniciar sesión"** |
+| ⏰ Como máximo cada 5 minutos | Jacobot vuelve a pedir un token a Microsoft, que debería negarlo (sin verificar) |
 
 🟡 Los tiempos reales se medirán en el tenant de prueba.
 
 ---
 
-## 🧪 Auditorías adversariales
+## 🧪 Revisiones adversariales
 
-Al cerrar cada fase, un **auditor independiente** (otro modelo de IA, con contexto aislado)
+> ⚠️ Las hace un **modelo de IA**. No son un pentest externo ni una certificación, y las
+> correcciones se comprobaron con pruebas pero **no se volvieron a auditar**.
+
+Al cerrar cada fase, un **auditor de IA** (otro modelo, con contexto aislado)
 intenta **romper** el sistema y demuestra cada fallo con una prueba automática que falla. Cada
 hallazgo se corrige y su prueba queda como regresión para siempre.
 
 | Fase | 🔴 Alto | 🟠 Medio | 🟡 Bajo | Estado |
 |---|:---:|:---:|:---:|---|
-| 0–1 Base | 0 | 6 | 5 | ✅ Todo corregido |
-| 2 Documentos | 1 | 2 | 3 | ✅ Todo corregido |
-| 3 Microsoft 365 | 1 | 6 | 3 | ✅ Todo corregido |
+| 0–1 Base | 0 | 6 | 5 | ✅ Corregido, con prueba |
+| 2 Documentos | 1 | 2 | 3 | ✅ Corregido, con prueba |
+| 3 Microsoft 365 | 1 | 6 | 3 | ✅ Corregido (P3-10 era de documentación) |
 
 Ejemplos de lo que encontró:
 - 🔴 Si alguien movía la carpeta de destino *después* de la vista previa, el archivo terminaba en

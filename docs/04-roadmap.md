@@ -136,7 +136,7 @@ extra (Power Automate o un bot de Teams).
 - [x] ✅ Las operaciones tienen confirmación
 - [x] 📒 La auditoría registra las acciones
 - [x] 🔁 Los reintentos son seguros
-- [x] 🛡️ No quedan hallazgos ALTOS sin corregir
+- [x] 🛡️ No quedan hallazgos ALTOS conocidos sin corregir
 - [ ] 🔐 Autenticación probada en un tenant real
 - [ ] 🔑 Permisos efectivos verificados en un tenant real
 - [ ] 💬 Teams y Copilot Studio probados
