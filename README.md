@@ -204,7 +204,7 @@ flowchart TB
 | 8 | 🧪 Auditoría final y piloto | `░░░░░░░░░░` | ⏳ |
 
 📊 **169 pruebas distintas pasando** (267 ejecuciones: 98 se repiten sobre el adaptador HTTP) ·
-🔍 **3 revisiones de seguridad hechas por un modelo de IA**, con sus hallazgos corregidos. No
+🔍 **3 revisiones de seguridad hechas por un modelo de IA**; queda un hallazgo medio incompleto. No
 son un pentest externo. Ver la [ficha técnica](docs/06-ficha-tecnica.md).
 
 ---

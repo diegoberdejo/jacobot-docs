@@ -126,7 +126,7 @@ hallazgo se corrige y su prueba queda como regresión para siempre.
 |---|:---:|:---:|:---:|---|
 | 0–1 Base | 0 | 6 | 5 | ✅ Corregido, con prueba |
 | 2 Documentos | 1 | 2 | 3 | ✅ Corregido, con prueba |
-| 3 Microsoft 365 | 1 | 6 | 3 | ✅ Corregido (P3-10 era de documentación) |
+| 3 Microsoft 365 | 1 | 6 | 3 | 🟡 Corregido, salvo P3-03 (medio), que quedó incompleto |
 
 Ejemplos de lo que encontró:
 - 🔴 Si alguien movía la carpeta de destino *después* de la vista previa, el archivo terminaba en

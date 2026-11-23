@@ -124,8 +124,9 @@ etiquetas y qué usuario hizo cada operación. Las lecturas se auditan por canti
 | ruff · mypy estricto | Sin errores (17 archivos) |
 | Revisión de seguridad | 3 rondas con un **modelo de IA** auditor |
 
-Las revisiones de seguridad **no son un pentest externo** ni una certificación. Sus hallazgos se
-corrigieron y sus pruebas pasan, pero las correcciones no se volvieron a auditar.
+Las revisiones de seguridad **no son un pentest externo** ni una certificación. Las pruebas de sus
+hallazgos pasan, pero las correcciones no se volvieron a auditar y **una quedó incompleta** (P3-03,
+última limitación de la sección 9).
 
 ## 9. ⚠️ Limitaciones conocidas
 
