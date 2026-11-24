@@ -102,7 +102,7 @@ stateDiagram-v2
     EXECUTING --> UNKNOWN: ❓ no se sabe si se aplicó
     UNKNOWN --> SUCCEEDED: 🔎 reconciliado, sí se hizo
     UNKNOWN --> RECONCILED: 🔎 reconciliado, es seguro reintentar
-    UNKNOWN --> FAILED: 🔎 otra persona cambió algo
+    UNKNOWN --> FAILED: 🔎 otra persona cambió algo, o pasaron más de 3 días
     RECONCILED --> EXECUTING: 🔁 reintento seguro
     AWAITING_CONFIRMATION --> EXPIRED: ⏰
     AWAITING_APPROVAL --> EXPIRED: ⏰
@@ -127,7 +127,7 @@ flowchart TB
     A["⚙️ Mover archivo"] --> B["📡 ...respuesta perdida..."] --> C["❓ UNKNOWN"]
     C --> D{"🔎 Reconciliar:<br/>¿dónde está el archivo?"}
     D -->|"✅ ya está en el destino"| E["SUCCEEDED"]
-    D -->|"📍 sigue en el origen"| F["RECONCILED<br/>reintento seguro"]
+    D -->|"📍 sigue en el origen<br/>(hasta 3 días)"| F["RECONCILED<br/>reintento seguro"]
     D -->|"⚠️ alguien lo movió"| G["FAILED"]
 ```
 

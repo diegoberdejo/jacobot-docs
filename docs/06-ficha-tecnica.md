@@ -10,7 +10,7 @@
 | **Modelo de despliegue** | Una instalación por cliente (single-tenant) |
 | **Fecha de la ficha** | 23/11/2026 · valores extraídos del código |
 
-Leyenda: ✅ construido y probado con simulación · 🟡 escrito, sin ejecutar · ⏳ planificado
+Leyenda: ✅ construido y probado en local (Microsoft 365 siempre simulado) · 🟡 escrito, sin ejecutar · ⏳ planificado
 
 ---
 
@@ -22,12 +22,12 @@ Leyenda: ✅ construido y probado con simulación · 🟡 escrito, sin ejecutar 
 | Framework API | FastAPI 0.115.14 · Uvicorn 0.32.1 | ✅ |
 | Validación | Pydantic 2.14.2, contratos con campos extra prohibidos | ✅ |
 | ORM / migraciones | SQLAlchemy 2.0.55 · Alembic 1.20.1 | ✅ |
-| Base de datos (producción) | PostgreSQL 17 · psycopg 3.2.13 | 🟡 sin probar |
+| Base de datos (producción) | PostgreSQL 17 · psycopg 3.2.13 | ✅ suite completa en 17.12 |
 | Base de datos (local y pruebas) | SQLite; rechazada fuera de `local` y `test` | ✅ |
 | Identidad | Microsoft Entra ID · PyJWT 2.15.1 · MSAL 1.39.0 | ✅ simulado |
 | Microsoft 365 | Microsoft Graph v1.0 · httpx 0.28.1 | ✅ simulado |
-| Contenedor | `python:3.12-slim`, usuario sin privilegios | 🟡 imagen sin construir |
-| CI | GitHub Actions: ruff, mypy, pytest, migraciones, pip-audit | 🟡 nunca ejecutada |
+| Contenedor | `python:3.12-slim`, usuario sin privilegios (uid 10001) | ✅ construida y arrancada en local |
+| CI | GitHub Actions: ruff, mypy, pytest (SQLite y PostgreSQL), migraciones, pip-audit | 🟡 nunca ejecutada |
 | Interfaz | Teams + Copilot Studio | ⏳ Fase 4 |
 | Infraestructura | Azure + Bicep + Key Vault | ⏳ Fase 7 |
 
@@ -76,11 +76,12 @@ Autenticación: `Authorization: Bearer` con token de usuario de Entra ID, salvo 
 | Alcance exigido | `Jacobot.Invoke`, delegado; se rechazan tokens de aplicación |
 | Permiso en Microsoft 365 | `Sites.Selected` delegado, concesión `write` por sitio |
 | Intercambio de token | On-Behalf-Of; certificado obligatorio en producción |
-| Integridad de operaciones | HMAC-SHA256 sobre operación, actor, parámetros y riesgo |
+| Integridad de operaciones | HMAC-SHA256 sobre operación, actor, parámetros y riesgo; se comprueba antes de mostrar, aprobar, ejecutar o reconciliar |
 | Integridad de aprobaciones | HMAC-SHA256, un solo uso, con vencimiento, sin autoaprobación |
 | Auditoría | Cadena HMAC-SHA256, escrita en la misma transacción que el estado |
 | Ámbito de archivos | Bandeja de entrada y `Proyectos/{proyecto}/{categoría}`, por identificadores |
-| Cambios concurrentes | `If-Match` (eTag) y verificación del destino antes de mover |
+| Cambios concurrentes | `If-Match` (eTag) y verificación del destino antes de mover; bloqueos de base de datos en orden fijo |
+| Arranque | Falla si no se declara el entorno; los errores de configuración no muestran claves |
 
 ## 5. 📏 Límites y tiempos
 
@@ -90,9 +91,12 @@ Autenticación: `Authorization: Bearer` con token de usuario de Entra ID, salvo 
 | Vigencia de una aprobación | 24 h |
 | Ejecución considerada atascada | 5 min |
 | Caché del token de Graph | máx. 5 min, 512 entradas |
-| Tiempo de espera hacia Microsoft | 30 s por llamada |
+| Plazo por petición (token, llamadas y esperas) | 60 s; una respuesta a goteo puede excederlo |
+| Tiempo de espera hacia Microsoft | máx. 30 s por fase de cada llamada (5 s para conectar); token: 10 s |
+| Margen mínimo para iniciar una escritura | más de 10 s restantes |
 | Intentos por llamada a Graph | máx. 4 |
-| Espera total por reintentos 429/503, por petición | máx. 30 s |
+| Espera total entre reintentos, por petición | máx. 30 s, sea cual sea la causa |
+| Reintento de una operación incierta | hasta 3 días desde su creación |
 | Llamadas a Graph por búsqueda | máx. 50, páginas incluidas |
 | Resultados por búsqueda / listado de proyectos | 25 / 100 |
 | Longitud de un nombre | 1–128 caracteres |
@@ -118,29 +122,33 @@ etiquetas y qué usuario hizo cada operación. Las lecturas se auditan por canti
 
 | Métrica | Valor |
 |---|---|
-| Pruebas distintas que pasan | **169** |
-| Ejecuciones totales | 267 (98 son las mismas pruebas repetidas sobre el adaptador HTTP) |
+| Pruebas distintas que pasan | **205** |
+| Ejecuciones por base de datos | 305 en SQLite y 305 en PostgreSQL 17.12 (100 son las mismas pruebas repetidas sobre el adaptador HTTP) |
+| Controles añadidos en esta ronda, quitados uno a uno | 38 de 38 hacen fallar alguna prueba |
+| Imagen Docker | Construye, migra PostgreSQL y responde; sin token devuelve 401 |
 | Pruebas contra Microsoft 365 real | 5 escritas, **0 ejecutadas** |
 | ruff · mypy estricto | Sin errores (17 archivos) |
-| Revisión de seguridad | 3 rondas con un **modelo de IA** auditor |
+| Revisión de seguridad | 4 rondas con un **modelo de IA** auditor; la última: 0 altos, 2 medios y 6 bajos, todos corregidos |
 
-Las revisiones de seguridad **no son un pentest externo** ni una certificación. Las pruebas de sus
-hallazgos pasan, pero las correcciones no se volvieron a auditar y **una quedó incompleta** (P3-03,
-última limitación de la sección 9).
+Las revisiones de seguridad **no son un pentest externo** ni una certificación. La cuarta ronda
+volvió a auditar las correcciones anteriores y encontró varias incompletas. Ya están completadas y
+con prueba, pero **las correcciones de esa cuarta ronda no se han vuelto a auditar**.
 
 ## 9. ⚠️ Limitaciones conocidas
 
 | | Limitación |
 |---|---|
 | ☁️ | Nada se ha probado en un Microsoft 365 real: permisos efectivos, revocación y tiempos están sin verificar |
-| 🐘 | PostgreSQL, la imagen Docker y la CI no se han ejecutado |
-| 📒 | Quien pueda escribir en la base de datos puede **recortar el final** de la auditoría sin que se detecte; requiere un ancla externa (Fase 7) |
+| 🐘 | PostgreSQL y la imagen Docker solo se han probado en un equipo local; la CI no se ha ejecutado |
+| 📒 | Quien pueda escribir en la base de datos puede **recortar el final** de la auditoría sin que se detecte; la solución está diseñada, no construida: requiere un ancla externa (Fase 7) |
+| 🗄️ | Quien pueda escribir en la base de datos también puede alterar el estado, el resultado, el enlace y las fechas que muestra una operación |
 | 🔑 | Las claves de firma viven en la memoria de la aplicación; con ellas y acceso a la base se podrían falsificar registros |
 | 🔍 | La búsqueda es por nombre, no por contenido |
 | 🗑️ | Sin borrado, subida de archivos ni restauración de versiones |
 | 📝 | Si falla la escritura del Registro documental, se audita pero no se reintenta sola |
 | 🚦 | Sin límite de peticiones por usuario |
-| ⏳ | El tope de 30 s cubre esperas por 429/503; los reintentos por cortes de conexión o timeouts no cuentan en él |
+| ⏳ | El plazo de 60 s no se ha comparado con el límite de espera de Copilot Studio |
+| 🕵️ | Un 403 de Microsoft se devuelve como 403; podría revelar que existe un archivo ajeno. Sin verificar hasta tener tenant |
 
 ## 10. 📦 Requisitos del cliente
 

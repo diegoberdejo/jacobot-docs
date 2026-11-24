@@ -115,8 +115,8 @@ flowchart LR
 
 ## 🧪 Revisiones adversariales
 
-> ⚠️ Las hace un **modelo de IA**. No son un pentest externo ni una certificación, y las
-> correcciones se comprobaron con pruebas pero **no se volvieron a auditar**.
+> ⚠️ Las hace un **modelo de IA**. No son un pentest externo ni una certificación. Las correcciones
+> de las fases 0–3 se volvieron a auditar; **las de esa última ronda, todavía no**.
 
 Al cerrar cada fase, un **auditor de IA** (otro modelo, con contexto aislado)
 intenta **romper** el sistema y demuestra cada fallo con una prueba automática que falla. Cada
@@ -124,9 +124,10 @@ hallazgo se corrige y su prueba queda como regresión para siempre.
 
 | Fase | 🔴 Alto | 🟠 Medio | 🟡 Bajo | Estado |
 |---|:---:|:---:|:---:|---|
-| 0–1 Base | 0 | 6 | 5 | ✅ Corregido, con prueba |
+| 0–1 Base | 0 | 6 | 5 | ✅ Corregido, con prueba (algunas correcciones se completaron en la reauditoría) |
 | 2 Documentos | 1 | 2 | 3 | ✅ Corregido, con prueba |
-| 3 Microsoft 365 | 1 | 6 | 3 | 🟡 Corregido, salvo P3-03 (medio), que quedó incompleto |
+| 3 Microsoft 365 | 1 | 6 | 3 | ✅ Corregido, con prueba (P3-01, P3-02 y P3-03 se completaron después) |
+| Reauditoría (23/11/2026) | 0 | 2 | 6 | ✅ Corregido, con prueba · 🟡 sin volver a auditar |
 
 Ejemplos de lo que encontró:
 - 🔴 Si alguien movía la carpeta de destino *después* de la vista previa, el archivo terminaba en
@@ -136,6 +137,13 @@ Ejemplos de lo que encontró:
   reconcilia.
 - 🟠 Una búsqueda podía hacer ~1000 llamadas a Microsoft y saturar el tenant. **Corregido:**
   máximo 50 por petición.
+- 🟠 Alguien con acceso a la base podía cambiar la vista previa que ve el aprobador.
+  **Corregido:** la huella se comprueba antes de mostrarla y antes de aprobar.
+
+Al probar con PostgreSQL y con la imagen Docker aparecieron además fallos que las pruebas con
+SQLite ocultaban, ya corregidos: un bloqueo mutuo entre aprobar y cancelar a la vez, errores 500
+con peticiones simultáneas, conexiones retenidas mientras se esperaba a Microsoft, y errores de
+arranque que escribían parte de una clave en el log.
 
 ---
 
