@@ -19,7 +19,7 @@ documentos, proyectos y tareas en SharePoint, de forma segura y auditada.**
 ![python](https://img.shields.io/badge/Python-3.12-blue)
 ![fastapi](https://img.shields.io/badge/FastAPI-0.115-009688)
 ![m365](https://img.shields.io/badge/Microsoft%20365-Graph%20v1.0-0078D4)
-![tests](https://img.shields.io/badge/tests-205%20✓%20simulados-brightgreen)
+![tests](https://img.shields.io/badge/tests-284%20✓%20simulados-brightgreen)
 ![privado](https://img.shields.io/badge/repo-privado-lightgrey)
 
 </div>
@@ -203,10 +203,10 @@ flowchart TB
 | 7 | 🚀 Infraestructura en Azure | `░░░░░░░░░░` | ⏳ |
 | 8 | 🧪 Auditoría final y piloto | `░░░░░░░░░░` | ⏳ |
 
-📊 **205 pruebas distintas pasando**, en SQLite y en PostgreSQL (305 ejecuciones en cada una: 100 se
-repiten sobre el adaptador HTTP) · 🔍 **4 revisiones de seguridad hechas por un modelo de IA**; los
-hallazgos están corregidos, pero los de la última no se han vuelto a auditar. No son un pentest
-externo. Ver la [ficha técnica](docs/06-ficha-tecnica.md).
+📊 **284 pruebas distintas pasando**, en SQLite y en PostgreSQL (384 ejecuciones en cada una: 100 se
+repiten sobre el adaptador HTTP) · 🔍 **6 revisiones de seguridad hechas por un modelo de IA**; los
+hallazgos están corregidos, pero las correcciones de la última no se han vuelto a revisar. No son un
+pentest externo. Ver la [ficha técnica](docs/06-ficha-tecnica.md).
 
 ---
 

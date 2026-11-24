@@ -8,7 +8,7 @@
 | **Componente** | Tool Gateway (API HTTP) · versión 0.2.0 |
 | **Estado** | Preproducción. Fases 0–3 construidas; **nunca ejecutado contra un Microsoft 365 real** |
 | **Modelo de despliegue** | Una instalación por cliente (single-tenant) |
-| **Fecha de la ficha** | 23/11/2026 · valores extraídos del código |
+| **Fecha de la ficha** | 24/11/2026 · valores extraídos del código |
 
 Leyenda: ✅ construido y probado en local (Microsoft 365 siempre simulado) · 🟡 escrito, sin ejecutar · ⏳ planificado
 
@@ -76,7 +76,8 @@ Autenticación: `Authorization: Bearer` con token de usuario de Entra ID, salvo 
 | Alcance exigido | `Jacobot.Invoke`, delegado; se rechazan tokens de aplicación |
 | Permiso en Microsoft 365 | `Sites.Selected` delegado, concesión `write` por sitio |
 | Intercambio de token | On-Behalf-Of; certificado obligatorio en producción |
-| Integridad de operaciones | HMAC-SHA256 sobre operación, actor, parámetros y riesgo; se comprueba antes de mostrar, aprobar, ejecutar o reconciliar |
+| Huella de la operación | HMAC-SHA256 sobre operación, actor, parámetros y riesgo: lo que confirma el solicitante y firma el aprobador |
+| Sello de la operación | HMAC-SHA256 sobre todas las columnas de la fila, estado incluido; se rehace en cada cambio. Se comprueba antes de mostrar, confirmar, aprobar, ejecutar, cancelar o reconciliar, y otra vez justo antes de escribir en Microsoft 365 |
 | Integridad de aprobaciones | HMAC-SHA256, un solo uso, con vencimiento, sin autoaprobación |
 | Auditoría | Cadena HMAC-SHA256, escrita en la misma transacción que el estado |
 | Ámbito de archivos | Bandeja de entrada y `Proyectos/{proyecto}/{categoría}`, por identificadores |
@@ -110,7 +111,7 @@ Autenticación: `Authorization: Bearer` con token de usuario de Entra ID, salvo 
 
 | Tabla | Contenido |
 |---|---|
-| `operations` | Operaciones, estado, parámetros confirmados, evidencia |
+| `operations` | Operaciones, estado, parámetros confirmados, evidencia, sello |
 | `approvals` | Decisiones firmadas |
 | `audit_events` | Eventos de auditoría encadenados |
 | `audit_head` | Último eslabón de la cadena, por tenant |
@@ -118,21 +119,26 @@ Autenticación: `Authorization: Bearer` con token de usuario de Entra ID, salvo 
 Jacobot no guarda el contenido de los documentos. Sí guarda nombres, identificadores, enlaces,
 etiquetas y qué usuario hizo cada operación. Las lecturas se auditan por cantidad, sin nombres.
 
-## 8. 🧪 Calidad (medido el 23/11/2026)
+## 8. 🧪 Calidad (medido el 24/11/2026)
 
 | Métrica | Valor |
 |---|---|
-| Pruebas distintas que pasan | **205** |
-| Ejecuciones por base de datos | 305 en SQLite y 305 en PostgreSQL 17.12 (100 son las mismas pruebas repetidas sobre el adaptador HTTP) |
-| Controles añadidos en esta ronda, quitados uno a uno | 38 de 38 hacen fallar alguna prueba |
-| Imagen Docker | Construye, migra PostgreSQL y responde; sin token devuelve 401 |
+| Pruebas distintas que pasan | **284** (15 son de la demo local) |
+| Ejecuciones por base de datos | 384 en SQLite y 384 en PostgreSQL 17.12 (100 son las mismas pruebas repetidas sobre el adaptador HTTP) |
+| Controles del sello, quitados uno a uno | 30 de 30 hacen fallar alguna prueba (ronda anterior: 38 de 38) |
+| Imagen Docker | Construye, migra PostgreSQL y responde; sin token devuelve 401 (medido el 23/11, antes del sello) |
 | Pruebas contra Microsoft 365 real | 5 escritas, **0 ejecutadas** |
 | ruff · mypy estricto | Sin errores (17 archivos) |
-| Revisión de seguridad | 4 rondas con un **modelo de IA** auditor; la última: 0 altos, 2 medios y 6 bajos, todos corregidos |
+| Revisión de seguridad | 4 rondas con un **modelo de IA** auditor y 2 más sobre el sello; estas dos: 0 altos, 6 medios y 7 bajos, todos corregidos |
 
 Las revisiones de seguridad **no son un pentest externo** ni una certificación. La cuarta ronda
-volvió a auditar las correcciones anteriores y encontró varias incompletas. Ya están completadas y
-con prueba, pero **las correcciones de esa cuarta ronda no se han vuelto a auditar**.
+volvió a auditar las correcciones anteriores y encontró varias incompletas, ya completadas y con prueba.
+
+El sello cierra dos fallos reproducidos el 24/11/2026, el segundo porque una corrección de la cuarta
+ronda quedó incompleta: quien pudiera escribir en la base de datos podía saltarse la confirmación de
+una operación de riesgo bajo o medio, y cancelar mostraba una vista previa alterada. Al corregirlos se
+introdujeron cuatro errores nuevos, que encontraron esas dos revisiones. Están corregidos y con prueba,
+pero **las correcciones de la última revisión no se han vuelto a revisar**.
 
 ## 9. ⚠️ Limitaciones conocidas
 
@@ -141,7 +147,8 @@ con prueba, pero **las correcciones de esa cuarta ronda no se han vuelto a audit
 | ☁️ | Nada se ha probado en un Microsoft 365 real: permisos efectivos, revocación y tiempos están sin verificar |
 | 🐘 | PostgreSQL y la imagen Docker solo se han probado en un equipo local; la CI no se ha ejecutado |
 | 📒 | Quien pueda escribir en la base de datos puede **recortar el final** de la auditoría sin que se detecte; la solución está diseñada, no construida: requiere un ancla externa (Fase 7) |
-| 🗄️ | Quien pueda escribir en la base de datos también puede alterar el estado, el resultado, el enlace y las fechas que muestra una operación |
+| 🗄️ | Quien pueda escribir en la base de datos puede restaurar una **versión anterior auténtica** de una operación: deshacer una cancelación o repetir algo ya confirmado, nunca otra cosa. Siempre hace falta que la ejecute quien la pidió, y si espera aprobación, que el aprobador la apruebe |
+| 🔁 | Las operaciones creadas antes del sello no se pueden usar y hay que pedirlas de nuevo (no existe ninguna instalación real con ellas) |
 | 🔑 | Las claves de firma viven en la memoria de la aplicación; con ellas y acceso a la base se podrían falsificar registros |
 | 🔍 | La búsqueda es por nombre, no por contenido |
 | 🗑️ | Sin borrado, subida de archivos ni restauración de versiones |

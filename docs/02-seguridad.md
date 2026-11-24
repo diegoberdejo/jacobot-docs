@@ -116,7 +116,7 @@ flowchart LR
 ## 🧪 Revisiones adversariales
 
 > ⚠️ Las hace un **modelo de IA**. No son un pentest externo ni una certificación. Las correcciones
-> de las fases 0–3 se volvieron a auditar; **las de esa última ronda, todavía no**.
+> de las fases 0–3 se volvieron a auditar; **las de la última revisión (la del sello), todavía no**.
 
 Al cerrar cada fase, un **auditor de IA** (otro modelo, con contexto aislado)
 intenta **romper** el sistema y demuestra cada fallo con una prueba automática que falla. Cada
@@ -127,7 +127,8 @@ hallazgo se corrige y su prueba queda como regresión para siempre.
 | 0–1 Base | 0 | 6 | 5 | ✅ Corregido, con prueba (algunas correcciones se completaron en la reauditoría) |
 | 2 Documentos | 1 | 2 | 3 | ✅ Corregido, con prueba |
 | 3 Microsoft 365 | 1 | 6 | 3 | ✅ Corregido, con prueba (P3-01, P3-02 y P3-03 se completaron después) |
-| Reauditoría (23/11/2026) | 0 | 2 | 6 | ✅ Corregido, con prueba · 🟡 sin volver a auditar |
+| Reauditoría (23/11/2026) | 0 | 2 | 6 | ✅ Corregido, con prueba (RW-01 se completó con el sello) · 🟡 las demás, sin volver a auditar a fondo |
+| Sello de operaciones (24/11/2026, 2 revisiones) | 0 | 6 | 7 | ✅ Corregido, con prueba · 🟡 sin volver a revisar |
 
 Ejemplos de lo que encontró:
 - 🔴 Si alguien movía la carpeta de destino *después* de la vista previa, el archivo terminaba en
@@ -139,6 +140,12 @@ Ejemplos de lo que encontró:
   máximo 50 por petición.
 - 🟠 Alguien con acceso a la base podía cambiar la vista previa que ve el aprobador.
   **Corregido:** la huella se comprueba antes de mostrarla y antes de aprobar.
+
+Al preparar la demo aparecieron otros dos fallos que las revisiones no habían visto: quien pudiera
+escribir en la base de datos podía marcar una operación de riesgo bajo o medio como confirmada y
+ejecutarla sin que nadie la confirmara, y *cancelar* mostraba la vista previa alterada.
+**Corregido:** cada operación lleva un **sello** sobre todos sus datos. Queda un resto: restaurar una
+versión anterior auténtica de la misma operación (ver [limitaciones](06-ficha-tecnica.md)).
 
 Al probar con PostgreSQL y con la imagen Docker aparecieron además fallos que las pruebas con
 SQLite ocultaban, ya corregidos: un bloqueo mutuo entre aprobar y cancelar a la vez, errores 500

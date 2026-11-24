@@ -18,6 +18,7 @@ Términos técnicos explicados sin jerga.
 | 📜 | **Catálogo** | La lista cerrada de acciones que Jacobot sabe hacer. Lo que no está ahí, no se puede pedir |
 | 👀 | **Vista previa** | Lo que Jacobot te muestra antes de hacer algo, para que confirmes |
 | 🔏 | **Huella / digest** | Un código único calculado sobre lo que se va a hacer. Si algo cambia, la huella deja de coincidir |
+| 🪪 | **Sello** | Firma sobre todos los datos guardados de una operación, incluido su estado. Si alguien los edita en la base de datos, Jacobot se niega a usarla |
 | ✍️ | **Firma HMAC** | Un sello criptográfico que delata si alguien edita una aprobación o un evento de auditoría sin tener la clave |
 | 🧑‍⚖️ | **Segregación de funciones** | Quien pide no puede ser quien aprueba |
 | ❓ | **UNKNOWN** | Estado de una operación cuando no se sabe si Microsoft la ejecutó (por ejemplo, se cortó la conexión) |

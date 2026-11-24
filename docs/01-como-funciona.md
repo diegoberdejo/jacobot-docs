@@ -81,6 +81,10 @@ lo que se va a hacer: qué archivo, qué destino, quién lo pide y con qué nive
 confirmación y la aprobación quedan atadas a esa huella. Si alguien cambia algo después, aunque
 sea directamente en la base de datos, la huella deja de coincidir y Jacobot se niega a ejecutar. 🚫
 
+Además, cada operación lleva un **sello** sobre *todos* sus datos, incluido si está confirmada o
+aprobada. La clave no está en la base de datos, así que nadie puede marcar una operación como
+confirmada editándola ahí. 🔏
+
 ---
 
 ## 🚦 La máquina de estados

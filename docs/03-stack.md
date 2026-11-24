@@ -79,7 +79,7 @@ mantener que muchos microservicios.
 ├── 🧾 contracts      → contratos de entrada y salida
 ├── 🔌 adapters       → interfaz de almacenamiento + simulador
 ├── 🌐 graph          → adaptador real de Microsoft Graph
-├── 🔏 integrity      → huellas y firmas
+├── 🔏 integrity      → huellas, sellos y firmas
 ├── 🗄️ db             → modelos de base de datos
 └── ⚙️ config         → configuración por cliente
 ```
@@ -102,7 +102,7 @@ flowchart LR
 | 🟢 **Unitarias del adaptador** | Reintentos, paginación, errores, tokens | ✅ Pasando |
 | 🔴 **Live** | Comportamiento real de Microsoft 365 | ⏳ Esperando el tenant |
 
-📊 **205 pruebas distintas pasando** (305 ejecuciones en SQLite y 305 en PostgreSQL) · 5 pruebas
+📊 **284 pruebas distintas pasando** (384 ejecuciones en SQLite y 384 en PostgreSQL) · 5 pruebas
 live a la espera del tenant.
 
 ### ✅ Control de calidad en cada cambio
